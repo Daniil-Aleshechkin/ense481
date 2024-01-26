@@ -19,7 +19,7 @@ void timer_init(void) {
     // Enable the timer
     TIM2->CR1 |= TIM_CR1_CEN;
 
-    while (!(TIM2->SR & (1<<0)));
+    while (!(TIM2->SR & TIM_SR_UIF));
 }
 
 uint16_t timer_start(void) {
