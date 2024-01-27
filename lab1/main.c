@@ -1,40 +1,41 @@
 #include "main.h"
 #include "sttimer.h"
+#include "util.h"
 
-void delay(int millis) {
-    while (millis-- > 0) {
-        volatile int x = 2;
-        while (x-- > 0) {
-            __asm("nop");
-        }
-    }
-}
+#define RUNS 50
 
 int main(void) {
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+    uint16_t volatile time = 0;
+    #pragma GCC diagnostic pop
 
-    // GPIO structure for port initialization
-    GPIO_InitTypeDef GPIO_InitStructure;
-    uint16_t time = 0;
-    uint16_t startTime = 0;
-    // enable clock on APB2
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,  ENABLE);
+    uint16_t volatile startTime = 0;
 
-    // configure port A1 for driving an LED
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;    // output push-pull mode
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;   // highest speed
-    GPIO_Init(GPIOA, &GPIO_InitStructure) ;             // initialize port
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-variable"
+    uint16_t volatile totalTimes[RUNS]; 
+    #pragma GCC diagnostic pop
+
+    
+    // Initialize all testing variables
+    int32_t testInt32s[RUNS];
+    int64_t testInt64s[RUNS];
+    struct byte_8* testByte8[RUNS];
+    struct byte_128* testByte128[RUNS];
+    struct byte_1024* testByte1024[RUNS];
+    
+    getRandomInt32s((int32_t*)&testInt32s, RUNS);
+    getRandomInt64s((int64_t*)&testInt64s, RUNS);
+    getRandomByte8s((struct byte_8**)&testByte8, RUNS);
+    getRandomByte128s((struct byte_128**)&testByte128, RUNS);
+    getRandomByte1024s((struct byte_1024**)&testByte1024, RUNS);
 
     timer_init();
+    
 
-    // main loop
     while(1) {
         startTime = timer_start();
-        GPIO_SetBits(GPIOA, GPIO_Pin_5);    // turn the LED on
-        delay(DELAY);
-
-        GPIO_ResetBits(GPIOA, GPIO_Pin_1);  // turn the LED off
-        delay(DELAY);
         time = timer_stop(startTime);
     }
 }
