@@ -5,19 +5,10 @@
 #define RUNS 50
 
 int main(void) {
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
     uint16_t volatile time = 0;
-    #pragma GCC diagnostic pop
-
     uint16_t volatile startTime = 0;
-
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wunused-variable"
     uint16_t volatile totalTimes[RUNS]; 
-    #pragma GCC diagnostic pop
 
-    
     // Initialize all testing variables
     int32_t testInt32s[RUNS];
     int64_t testInt64s[RUNS];
@@ -33,7 +24,6 @@ int main(void) {
 
     timer_init();
     
-
     while(1) {
         startTime = timer_start();
         time = timer_stop(startTime);
